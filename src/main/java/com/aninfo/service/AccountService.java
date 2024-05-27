@@ -9,6 +9,7 @@ import com.aninfo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Optional;
@@ -32,6 +33,10 @@ public class AccountService {
 
     public Optional<Account> findById(Long cbu) {
         return accountRepository.findById(cbu);
+    }
+
+    public Optional<Transaction> findByTransactionId(Integer id) {
+        return transactionRepository.findById(id);
     }
 
     public void save(Account account) {
@@ -64,6 +69,26 @@ public class AccountService {
 
         accountRepository.save(account);
         transactionRepository.save(transaction);
+
+        return account;
+    }
+
+    @Transactional
+    public Account deleteTransaction(long cbu, Integer id) throws AccountNotFoundException{
+        Optional<Account> accountOptional = findById(cbu);
+
+        if (accountOptional.isEmpty()) throw new AccountNotFoundException("Account not found");
+
+        Account account = accountOptional.get();
+        Optional<Transaction> transactionOptional = account.getTransactions().stream().filter(transaction -> transaction.getId().equals(id)).findFirst();
+
+        //Se deberia crear una excepcion para este caso...
+        if (transactionOptional.isEmpty()) throw new AccountNotFoundException("Transaction not found");
+
+        Transaction transaction = transactionOptional.get();
+        transaction.unexecute();
+        save(account);
+        transactionRepository.delete(transaction);
 
         return account;
     }

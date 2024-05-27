@@ -1,6 +1,7 @@
 package com.aninfo;
 
 import com.aninfo.model.Account;
+import com.aninfo.model.Transaction;
 import com.aninfo.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,8 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.security.auth.login.AccountNotFoundException;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -72,6 +75,26 @@ public class Memo1BankApp {
 	@PutMapping("/accounts/{cbu}/deposit")
 	public Account deposit(@PathVariable Long cbu, @RequestParam Double sum) {
 		return accountService.deposit(cbu, sum);
+	}
+
+	@GetMapping("account/{cbu}/transactions")
+	public Collection<Transaction> getAccountTransactions(@PathVariable Long cbu) throws AccountNotFoundException {
+		Optional<Account> accountOptional = accountService.findById(cbu);
+
+		if (accountOptional.isEmpty()) throw new AccountNotFoundException("Account not found");
+
+		return accountOptional.get().getTransactions();
+	}
+
+	@GetMapping("/transactions/{id}")
+	public ResponseEntity<Transaction> getTransaction(@PathVariable Integer id) {
+		Optional<Transaction> transactionOptional = accountService.findByTransactionId(id);
+		return ResponseEntity.of(transactionOptional);
+	}
+
+	@DeleteMapping("account/{cbu}/transaction/{id}")
+	public Account deleteTransaction(@PathVariable long cbu, @PathVariable Integer id) throws AccountNotFoundException {
+		return accountService.deleteTransaction(cbu, id);
 	}
 
 	@Bean

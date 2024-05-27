@@ -20,4 +20,11 @@ public class Deposit extends Transaction{
         //Account tendria que tener un metodo "deposit" por buenas practicas, pero por simplicidad lo dejamos como esta...
         getTargetAccount().setBalance(getTargetAccount().getBalance() + getAmount());
     }
+
+    @Override
+    public void unexecute(){
+        //Account tendria que tener un metodo "withdraw" por buenas practicas, pero por simplicidad lo dejamos como esta...
+        getTargetAccount().setBalance(getTargetAccount().getBalance() - getAmount());
+        targetAccount.removeTransaction(this);
+    }
 }
