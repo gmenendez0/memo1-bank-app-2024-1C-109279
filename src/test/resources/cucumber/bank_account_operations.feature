@@ -23,8 +23,7 @@ Feature: Bank account operations
     Then Operation should be denied due to negative sum
     And Account balance should remain 200
 
-
-Feature: Bank account promo, get 10% extra in your $2000+ deposits, up to $500
+#Feature: Bank account promo, get 10% extra in your $2000+ deposits, up to $500
 
   Scenario: Successfully promo applied, cap not reached.
     Given Account with a balance of 0

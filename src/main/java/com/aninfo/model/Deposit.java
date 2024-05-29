@@ -21,7 +21,7 @@ public class Deposit extends Transaction{
         getTargetAccount().setBalance(getTargetAccount().getBalance() + getAmount());
 
         //Deberia usarse una constante y ubicar la promo en otro fragmento de codigo por mas prolijidad...
-        if(amount > 2000){
+        if(amount >= 2000){
             int promo = (int) (amount * 0.1);
             if (promo > 500) promo = 500;
 
@@ -36,7 +36,7 @@ public class Deposit extends Transaction{
         targetAccount.removeTransaction(this);
 
         //Deberia usarse una constante y ubicar la promo en otro fragmento de codigo por mas prolijidad...
-        if(amount > 2000){
+        if(amount >= 2000){
             int promo = (int) (amount * 0.1);
             if (promo > 500) promo = 500;
 
